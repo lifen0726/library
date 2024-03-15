@@ -1,0 +1,44 @@
+//package com.library.model;
+//
+//import java.io.Serializable;
+//import java.time.LocalDateTime;
+//import java.util.Objects;
+//
+//public class BorrowingRecordId implements Serializable {
+//    /**
+//	 * 
+//	 */
+//	private static final long serialVersionUID = 1L;
+//	private int user;
+//    private int inventory;
+//    private LocalDateTime borrowingTime;
+//
+//    // Constructors
+//    public BorrowingRecordId() {
+//    }
+//
+//    public BorrowingRecordId(int user, int inventory, LocalDateTime borrowingTime) {
+//        this.user = user;
+//        this.inventory = inventory;
+//        this.borrowingTime = borrowingTime;
+//    }
+//
+//    // Equals method
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        BorrowingRecordId that = (BorrowingRecordId) o;
+//        return user == that.user &&
+//                inventory == that.inventory &&
+//                borrowingTime.equals(that.borrowingTime);
+//    }
+//
+//    // HashCode method
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(user, inventory, borrowingTime);
+//    }
+//}
+
+

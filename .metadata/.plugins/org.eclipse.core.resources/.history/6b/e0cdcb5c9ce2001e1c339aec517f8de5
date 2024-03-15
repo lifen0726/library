@@ -1,0 +1,50 @@
+package com.library.service;
+
+import java.util.Collections;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.library.model.User; // Importing your User class from the model package
+
+
+public class AuthUserDetailsService implements UserDetailsService {
+
+    @Autowired
+    private UserService userService; // Renamed from memberService
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    // ...
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userService.findByName(username); // Changed from memberService.findByName
+        if (user == null) { // Changed from member to user
+            throw new UsernameNotFoundException("找不到用戶");
+        }
+
+        // 確保密碼被正確編碼
+        List<GrantedAuthority> authorities = getAuthorities();
+
+        // 返回已編碼密碼和權限的 UserDetails
+        return new User(user.getName(), user.getPassword(), authorities); // Changed from member to user
+    }
+    
+    private List<GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    // ...
+}
+
+

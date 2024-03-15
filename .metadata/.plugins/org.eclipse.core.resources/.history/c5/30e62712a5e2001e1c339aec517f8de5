@@ -1,0 +1,19 @@
+package com.library.repository;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.library.model.BorrowingRecord;
+import com.library.model.BorrowingRecordId;
+
+@Repository
+public interface BorrowingRecordRepository extends JpaRepository<BorrowingRecord, BorrowingRecordId> {
+
+	Optional<BorrowingRecord> findByIds(int userId, int inventoryId, LocalDateTime borrowingTime);
+    // 可以在這裡定義自定義的查詢方法
+
+	void deleteByIds(int userId, int inventoryId, LocalDateTime borrowingTime);
+}

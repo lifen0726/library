@@ -1,0 +1,59 @@
+package com.library.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.carrotcake.exception.UserNotFoundException;
+import com.library.repository.UserRepository; // Assuming there's a UserRepository instead of MemberRepository
+import com.library.model.User; // Assuming there's a User model instead of Member
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@Transactional
+public class UserService {
+
+    @Autowired 
+    private UserRepository userRepository; 
+    
+    public User findByNameAndPsw(String name, String password) {
+        return userRepository.findByNameAndPassword(name, password);
+    }
+
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public User findByName(String username) {
+        Optional<User> uResp = userRepository.findByName(username);
+        if(uResp.isEmpty()) {
+            throw new UsernameNotFoundException("Can't find user."); 
+        }
+        return uResp.get();
+    }
+
+    public User saveUser(User user) {
+        return userRepository.save(user); 
+    }
+
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByName(username); // Changed from member to user
+    }
+
+    public void deleteUser(int userId) {
+        userRepository.deleteById(userId); // Changed from member to user
+    }
+
+    public User getUserById(int userId) {
+        Optional<User> optionalUser = userRepository.findById(userId); // Changed from member to user
+
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        } else {
+            throw new UserNotFoundException("User not found with ID: " + userId); // Changed from member to user
+        }
+    }
+}

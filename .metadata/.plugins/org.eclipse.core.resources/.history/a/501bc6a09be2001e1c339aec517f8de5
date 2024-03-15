@@ -1,0 +1,14 @@
+package com.library.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.library.model.User; // 修改为 User
+
+public interface UserRepository extends JpaRepository<User, Integer> { // 修改为 UserRepository
+    public Optional<User> findByName(String name); // 修改为 User
+    public User findByNameAndPassword(String name, String password); // 修改为 User
+    Boolean existsByName(String username); // 修改为 User
+}
+

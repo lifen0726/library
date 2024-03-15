@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy/>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="com.library.model.User"/>
+    <fullyQualifiedTypeName name="com.library.model.BorrowingRecordId"/>
+    <fullyQualifiedTypeName name="com.library.repository.InventoryRepository"/>
+    <fullyQualifiedTypeName name="com.library.model.Inventory"/>
+    <fullyQualifiedTypeName name="com.library.repository.BookRepository"/>
+    <fullyQualifiedTypeName name="com.library.model.Book"/>
+    <fullyQualifiedTypeName name="com.library.repository.BorrowingRecordRepository"/>
+    <fullyQualifiedTypeName name="com.library.model.BorrowingRecord"/>
+    <fullyQualifiedTypeName name="java.time.LocalDateTime"/>
+</qualifiedTypeNameHistroy>

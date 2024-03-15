@@ -1,0 +1,14 @@
+package com.library.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.library.model.Users; 
+
+public interface UserRepository extends JpaRepository<Users, Integer> { 
+    public Optional<Users> findByUsername(String username); 
+    public Users findByUsernameAndPassword(String username, String password);
+    Boolean existsByUsername(String username);
+}
+
