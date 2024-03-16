@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import tw.library.exception.UserNotFoundException;
-import tw.library.repository.UserRepository; 
-import tw.library.model.User; 
+import tw.library.model.User;
+import tw.library.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,44 +16,52 @@ import java.util.Optional;
 @Transactional
 public class UserService {
 
-    @Autowired 
-    private UserRepository userRepository; 
-    
-    public User findByNameAndPsw(String username, String password) {
-        return userRepository.findByUserNameAndPassword(username, password);
-    }
+	@Autowired
+	private UserRepository userRepository;
 
-    public List<User> findAllUsers() {
-        return userRepository.findAll();
-    }
+	public User findByNameAndPsw(String name, String password) {
+		return userRepository.findByNameAndPassword(name, password);
+	}
 
-    public User findByName(String username) {
-        Optional<User> uResp = userRepository.findByUserName(username);
-        if(uResp.isEmpty()) {
-            throw new UsernameNotFoundException("Can't find user."); 
-        }
-        return uResp.get();
-    }
+	public List<User> findAllMembers() {
+		return userRepository.findAll();
+	}
 
-    public User saveUser(User user) {
-        return userRepository.save(user); 
-    }
+	public User findByName(String name) {
+		Optional<User> uResp = userRepository.findByName(name);
+		if (uResp.isEmpty()) {
+			throw new UsernameNotFoundException("Can't find member.");
+		}
+		return uResp.get();
+	}
 
-    public boolean existsByUsername(String username) {
-        return userRepository.existsByUserName(username); 
-    }
+	public User saveMember(User member) {
+		return userRepository.save(member);
+	}
 
-    public void deleteUser(int userId) {
-        userRepository.deleteById(userId); 
-    }
+	public boolean existsByUsername(String username) {
+		return userRepository.existsByName(username);
+	}
+	
+	public boolean existsByPhone(String phone) {
+		return userRepository.existsByPhone(phone);
+	}
 
-    public User getUserById(int userId) {
-        Optional<User> optionalUser = userRepository.findById(userId); 
+	public void deleteMember(int memberId) {
 
-        if (optionalUser.isPresent()) {
-            return optionalUser.get();
-        } else {
-            throw new UserNotFoundException("User not found with ID: " + userId); 
-        }
-    }
+		userRepository.deleteById(memberId);
+	}
+
+	public User getMemberById(int memberId) {
+		Optional<User> optionalMember = userRepository.findById(memberId);
+
+		if (optionalMember.isPresent()) {
+			return optionalMember.get();
+		} else {
+			throw new UserNotFoundException("Member not found with ID: " + memberId);
+		}
+	}
+
+	
+
 }

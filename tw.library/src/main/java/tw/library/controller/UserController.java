@@ -10,21 +10,21 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import jakarta.servlet.http.HttpServletRequest;
 import tw.library.exception.UserNotFoundException;
 import tw.library.model.User;
-import tw.library.service.MemberService;
+import tw.library.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/members")
-public class MemberController {
+@RequestMapping("/users")
+public class UserController {
 
     @Autowired
-    private MemberService memberService;
+    private UserService userService;
     
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -34,13 +34,13 @@ public class MemberController {
 
     @GetMapping
     public List<User> getAllMembers() {
-        return memberService.findAllMembers();
+        return userService.findAllMembers();
     }
 
     @GetMapping("/{memberName}")
     public ResponseEntity<User> getMemberByName(@PathVariable String memberName) {
         try {
-            User member = memberService.findByName(memberName);
+            User member = userService.findByName(memberName);
             return new ResponseEntity<>(member, HttpStatus.OK);
         } catch (UsernameNotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -55,20 +55,27 @@ public class MemberController {
             String password = request.getParameter("password");
 
             if (password != null && !password.trim().isEmpty()) {
-                if (!memberService.existsByUsername(username)) {
-                    User member = new User();
-                    member.setName(username);
-                    member.setPhone(phone);
+                if (!userService.existsByUsername(username)) {
+                    if (!userService.existsByPhone(phone)) { // 加入手機號碼驗證邏輯
+                        User member = new User();
+                        member.setName(username);
+                        member.setPhone(phone);
 
-                    // 在設置之前對密碼進行編碼
-                    String encodedPassword = passwordEncoder.encode(password);
-                    member.setPassword(encodedPassword);
+                        // 在設置之前對密碼進行編碼
+                        String encodedPassword = passwordEncoder.encode(password);
+                        member.setPassword(encodedPassword);
+                        
+                     // 設置註冊時間
+                        member.setRegistrationTime(LocalDateTime.now());
 
-                    memberService.saveMember(member);
-                    return ResponseEntity.ok("User registered successfully");
+                        userService.saveMember(member);
+                        return ResponseEntity.ok("User registered successfully");
+                    } else {
+                        return new ResponseEntity<>("手機號碼已被使用", HttpStatus.BAD_REQUEST);
+                    }
                 } else {
                     return new ResponseEntity<>("用戶名已被使用", HttpStatus.BAD_REQUEST);
-                }
+                } 
             } else {
                 return new ResponseEntity<>("密碼不能為空", HttpStatus.BAD_REQUEST);
             }
@@ -76,7 +83,6 @@ public class MemberController {
             return new ResponseEntity<>("註冊失敗", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
 
     @PostMapping("/login")
     public String login(@RequestParam String username, @RequestParam String password) {
@@ -102,14 +108,14 @@ public class MemberController {
     @PutMapping("/{memberId}")
     public ResponseEntity<String> updateMember(@PathVariable int memberId, @RequestBody User updatedMember) {
         try {
-            User existingMember = memberService.getMemberById(memberId);
+            User existingMember = userService.getMemberById(memberId);
 
             // Update member information
             existingMember.setName(updatedMember.getName());
             existingMember.setPassword(updatedMember.getPassword());
             existingMember.setPhone(updatedMember.getPhone());
 
-            memberService.saveMember(existingMember);
+            userService.saveMember(existingMember);
 
             return new ResponseEntity<>("Update OK", HttpStatus.OK);
         } catch (UserNotFoundException ex) {
@@ -119,7 +125,7 @@ public class MemberController {
 
     @DeleteMapping("/{memberId}")
     public ResponseEntity<Void> deleteMember(@PathVariable int memberId) {
-        memberService.deleteMember(memberId);
+    	userService.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

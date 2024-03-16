@@ -99,7 +99,7 @@ function login() {
     formData.append("username", username);
     formData.append("password", password);
 
-    fetch('/members/login', {
+    fetch('/users/login', {
         method: 'POST',
         body: formData,
     })

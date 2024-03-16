@@ -229,7 +229,7 @@ function register() {
     var formData = new FormData(form);
     formData.delete("passwordConfirm"); // 刪除不需要提交的字段
 
-    fetch('/members/register', {
+    fetch('/users/register', {
         method: 'POST',
         body: formData,
     })

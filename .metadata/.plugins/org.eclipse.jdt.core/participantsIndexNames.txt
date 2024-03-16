@@ -1,5 +1,3 @@
 INDEX VERSION 1.134
-D:\新增資料夾\圖書館\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\4004655155.index
-\tw.memberlogin\src\main\java
 D:\新增資料夾\圖書館\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\971694994.index
 \tw.library\src\main\java

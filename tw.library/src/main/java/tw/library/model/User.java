@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Component;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,17 +12,27 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "member")
+@Table(name = "Users") // 將表名稱對應到資料庫中的Users表
 @Component
 public class User {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private String name;
-    private String password;
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 使用資料庫生成主鍵
+    @Column(name = "user_id") // 指定對應的資料庫欄位名稱
+    private int id; // 對應資料庫中的user_id欄位
+    
+    @Column(name = "phone_number")
     private String phone;
+    
+    private String password;
+    
+    @Column(name = "user_name")
+    private String name;
+    
+    @Column(name = "registration_time")
     private LocalDateTime registrationTime;
+    
+    @Column(name = "last_login_time")
     private LocalDateTime lastLoginTime;
 
 
