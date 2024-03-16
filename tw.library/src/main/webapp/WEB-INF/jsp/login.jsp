@@ -6,7 +6,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>登入頁面</title>
-<link rel="stylesheet" href="style.css">
 <style type="text/css">
 body {
   font-family: Arial, sans-serif;
@@ -79,9 +78,10 @@ a:hover {
   <form class="login-form" action="/login/page" method="post">
     <h2>登入</h2>
     <div class="input-group">
-      <label for="username">使用者名稱</label>
-      <input type="text" id="username" name="username" required>
-    </div>
+  <label for="phone">電話號碼</label>
+  <input type="tel" id="phone" name="phone" required>
+</div>
+
     <div class="input-group">
       <label for="password">密碼</label>
       <input type="password" id="password" name="password" required>
@@ -92,14 +92,14 @@ a:hover {
 </div>
 <script type="text/javascript">
 function login() {
-    var username = document.getElementById("username").value;
+    var phone = document.getElementById("phone").value;
     var password = document.getElementById("password").value;
 
     var formData = new FormData();
-    formData.append("username", username);
+    formData.append("phone", phone);
     formData.append("password", password);
 
-    fetch('/users/login', {
+    fetch('/user/login', {
         method: 'POST',
         body: formData,
     })

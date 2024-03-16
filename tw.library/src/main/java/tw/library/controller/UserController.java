@@ -33,12 +33,12 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<User> findAllUsers() {
         return userService.findAllUsers();
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<User> getUserByName(@PathVariable String username) {
+    public ResponseEntity<User> findUserByName(@PathVariable String username) {
         try {
             User user = userService.findByName(username);
             return new ResponseEntity<>(user, HttpStatus.OK);
