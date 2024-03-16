@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -33,15 +33,15 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @GetMapping
-    public List<User> getAllMembers() {
-        return userService.findAllMembers();
+    public List<User> getAllUsers() {
+        return userService.findAllUsers();
     }
 
-    @GetMapping("/{memberName}")
-    public ResponseEntity<User> getMemberByName(@PathVariable String memberName) {
+    @GetMapping("/{username}")
+    public ResponseEntity<User> getUserByName(@PathVariable String username) {
         try {
-            User member = userService.findByName(memberName);
-            return new ResponseEntity<>(member, HttpStatus.OK);
+            User user = userService.findByName(username);
+            return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (UsernameNotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -57,18 +57,18 @@ public class UserController {
             if (password != null && !password.trim().isEmpty()) {
                 if (!userService.existsByUsername(username)) {
                     if (!userService.existsByPhone(phone)) { // 加入手機號碼驗證邏輯
-                        User member = new User();
-                        member.setName(username);
-                        member.setPhone(phone);
+                        User user = new User();
+                        user.setName(username);
+                        user.setPhone(phone);
 
                         // 在設置之前對密碼進行編碼
                         String encodedPassword = passwordEncoder.encode(password);
-                        member.setPassword(encodedPassword);
+                        user.setPassword(encodedPassword);
                         
                      // 設置註冊時間
-                        member.setRegistrationTime(LocalDateTime.now());
+                        user.setRegistrationTime(LocalDateTime.now());
 
-                        userService.saveMember(member);
+                        userService.saveUser(user);
                         return ResponseEntity.ok("User registered successfully");
                     } else {
                         return new ResponseEntity<>("手機號碼已被使用", HttpStatus.BAD_REQUEST);
@@ -105,27 +105,28 @@ public class UserController {
     }
 
 
-    @PutMapping("/{memberId}")
-    public ResponseEntity<String> updateMember(@PathVariable int memberId, @RequestBody User updatedMember) {
+    @PutMapping("/{userId}")
+    public ResponseEntity<String> updateUser(@PathVariable int userId, @RequestBody User updatedUser) {
         try {
-            User existingMember = userService.getMemberById(memberId);
+            User existingUser = userService.findUserById(userId);
 
-            // Update member information
-            existingMember.setName(updatedMember.getName());
-            existingMember.setPassword(updatedMember.getPassword());
-            existingMember.setPhone(updatedMember.getPhone());
+            // Update user information except for the password
+            existingUser.setName(updatedUser.getName());
+            existingUser.setPhone(updatedUser.getPhone());
+            // Do not update the password
 
-            userService.saveMember(existingMember);
+            userService.saveUser(existingUser);
 
-            return new ResponseEntity<>("Update OK", HttpStatus.OK);
+            return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
         } catch (UserNotFoundException ex) {
-            return new ResponseEntity<>("Member not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
     }
 
-    @DeleteMapping("/{memberId}")
-    public ResponseEntity<Void> deleteMember(@PathVariable int memberId) {
-    	userService.deleteMember(memberId);
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable int userId) {
+    	userService.deleteUser(userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

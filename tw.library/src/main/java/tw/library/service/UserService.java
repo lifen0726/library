@@ -18,13 +18,33 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	
+	public List<User> findAllUsers() {
+		return userRepository.findAll();
+	}
+	
+    public User findUserById(int userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
+
+    
+    public User saveUser(User user) {
+    	return userRepository.save(user);
+    }
+
+    
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
+
+    
+    public void deleteUser(int userId) {
+        userRepository.deleteById(userId);
+    }
 
 	public User findByNameAndPsw(String name, String password) {
 		return userRepository.findByNameAndPassword(name, password);
-	}
-
-	public List<User> findAllMembers() {
-		return userRepository.findAll();
 	}
 
 	public User findByName(String name) {
@@ -35,21 +55,12 @@ public class UserService {
 		return uResp.get();
 	}
 
-	public User saveMember(User member) {
-		return userRepository.save(member);
-	}
-
 	public boolean existsByUsername(String username) {
 		return userRepository.existsByName(username);
 	}
 	
 	public boolean existsByPhone(String phone) {
 		return userRepository.existsByPhone(phone);
-	}
-
-	public void deleteMember(int memberId) {
-
-		userRepository.deleteById(memberId);
 	}
 
 	public User getMemberById(int memberId) {
@@ -60,6 +71,14 @@ public class UserService {
 		} else {
 			throw new UserNotFoundException("Member not found with ID: " + memberId);
 		}
+	}
+
+	public User findByPhone(String phone) {
+		Optional<User> uResp = userRepository.findByPhone(phone);
+		if (uResp.isEmpty()) {
+			throw new UserNotFoundException("Can't find member.");
+		}
+		return uResp.get();
 	}
 
 	
