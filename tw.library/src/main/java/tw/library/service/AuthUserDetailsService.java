@@ -8,9 +8,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 
-import tw.library.model.User; // 確保導入了正確的 User 類
+import tw.library.model.User; 
 
 
 public class AuthUserDetailsService implements UserDetailsService {
@@ -19,18 +18,18 @@ public class AuthUserDetailsService implements UserDetailsService {
     private UserService userService;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    	System.out.println("username:"+username);
-    	User user = userService.findByName(username);
-        System.out.println("User:"+user);
+    public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
+    	System.out.println(phone);
+    	User user = userService.findByPhone(phone);
+    	System.out.println(user);
         if (user == null) {
-        	throw new UsernameNotFoundException("找不到用户: " + username);
+        	throw new UsernameNotFoundException("找不到用户: " + phone);
         }
 
         List<GrantedAuthority> authorities = getAuthorities();
 
         
-        return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(), authorities);
+        return new org.springframework.security.core.userdetails.User(user.getPhone(), user.getPassword(), authorities);
     }
 
     private List<GrantedAuthority> getAuthorities() {

@@ -1,5 +1,4 @@
 INDEX VERSION 1.4+D:\新增資料夾\圖書館\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
-2422991101.index
 2306745890.index
 2723365463.index
 2351203749.index

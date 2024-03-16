@@ -77,10 +77,13 @@ public class UserService {
 		Optional<User> uResp = userRepository.findByPhone(phone);
 		System.out.println("uResp:"+uResp);
 		if (uResp.isEmpty()) {
-			throw new UserNotFoundException("我要崩潰了");
+			throw new UserNotFoundException("Can't find member.");
 		}
 		return uResp.get();
 	}
+
+
+
 
 	
 

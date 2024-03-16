@@ -94,25 +94,25 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password) {
-    	System.out.println("Received username: " + username);
-        System.out.println("Received password: " + password);
+    public String login(@RequestParam String phone, @RequestParam String password) {
         try {
-            // 對密碼進行編碼
+            // Encode the password
             String encodedPassword = passwordEncoder.encode(password);
-            // 使用 AuthenticationManager 進行身份驗證
+
+            // Using AuthenticationManager for authentication
             Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, encodedPassword)
+                new UsernamePasswordAuthenticationToken(phone, encodedPassword)
             );
 
-            // 設定身份驗證結果到 Security 上下文
+            // Set authentication result to Security context
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            return "redirect:/login/welcome"; // 登入成功，重定向到 welcome 頁面
+            return "redirect:/login/welcome"; // Redirect to the welcome page upon successful login
         } catch (Exception e) {
-            return "redirect:/login/page?error=true"; // 登入失敗，重定向到 login 頁面並顯示錯誤
+            return "redirect:/login/page?error=true"; // Redirect to login page with error message upon login failure
         }
     }
+
 
 
     @PutMapping("/{userId}")
