@@ -1,7 +1,4 @@
 package tw.library.service;
-
-import tw.library.model.User;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -11,8 +8,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
+import tw.library.model.User; // 確保導入了正確的 User 類
 
 
 public class AuthUserDetailsService implements UserDetailsService {
@@ -20,29 +18,24 @@ public class AuthUserDetailsService implements UserDetailsService {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
-    // ...
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    	System.out.println("username:"+username);
     	User user = userService.findByName(username);
+        System.out.println("User:"+user);
         if (user == null) {
-            throw new UsernameNotFoundException("找不到用戶");
+        	throw new UsernameNotFoundException("找不到用户: " + username);
         }
 
-        // 確保密碼被正確編碼
         List<GrantedAuthority> authorities = getAuthorities();
 
-        // 返回已編碼密碼和權限的 UserDetails
+        
         return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(), authorities);
     }
-    
+
     private List<GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
-
-    // ...
 }
+
 

@@ -36,16 +36,25 @@ public class UserController {
     public List<User> findAllUsers() {
         return userService.findAllUsers();
     }
-
-    @GetMapping("/{username}")
-    public ResponseEntity<User> findUserByName(@PathVariable String username) {
+    @GetMapping("/{phone}")
+    public ResponseEntity<User> findUserByPhone(@PathVariable String phone) {
         try {
-            User user = userService.findByName(username);
+            User user = userService.findByPhone(phone);
+            System.out.println(user);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (UsernameNotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+//    @GetMapping("/{username}")
+//    public ResponseEntity<User> findUserByName(@PathVariable String username) {
+//        try {
+//            User user = userService.findByName(username);
+//            return new ResponseEntity<>(user, HttpStatus.OK);
+//        } catch (UsernameNotFoundException ex) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//    }
 
     @PostMapping("/register")
     public ResponseEntity<String> register(HttpServletRequest request) {
@@ -86,10 +95,11 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(@RequestParam String username, @RequestParam String password) {
+    	System.out.println("Received username: " + username);
+        System.out.println("Received password: " + password);
         try {
             // 對密碼進行編碼
             String encodedPassword = passwordEncoder.encode(password);
-
             // 使用 AuthenticationManager 進行身份驗證
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, encodedPassword)

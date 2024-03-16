@@ -78,9 +78,9 @@ a:hover {
   <form class="login-form" action="/login/page" method="post">
     <h2>登入</h2>
     <div class="input-group">
-  <label for="phone">電話號碼</label>
-  <input type="tel" id="phone" name="phone" required>
-</div>
+      <label for="username">使用者名稱</label>
+      <input type="text" id="username" name="username" required>
+    </div>
 
     <div class="input-group">
       <label for="password">密碼</label>
@@ -92,11 +92,14 @@ a:hover {
 </div>
 <script type="text/javascript">
 function login() {
-    var phone = document.getElementById("phone").value;
+	var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
+    
+    console.log('Sending username:', username);
+    console.log('Sending password:', password);
 
     var formData = new FormData();
-    formData.append("phone", phone);
+    formData.append("username", username);
     formData.append("password", password);
 
     fetch('/user/login', {
