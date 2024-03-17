@@ -94,7 +94,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String phone, @RequestParam String password) {
+    public String login(@RequestParam String phone, @RequestParam String password, HttpServletRequest request) {
         try {
             // Encode the password
             String encodedPassword = passwordEncoder.encode(password);
@@ -106,12 +106,13 @@ public class UserController {
 
             // Set authentication result to Security context
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
+            
             return "redirect:/login/welcome"; // Redirect to the welcome page upon successful login
         } catch (Exception e) {
             return "redirect:/login/page?error=true"; // Redirect to login page with error message upon login failure
         }
     }
+
 
 
 

@@ -81,7 +81,6 @@ a:hover {
       <label for="phone">電話號碼:</label>
       <input type="tel" id="phone" name="username" required>
     </div>
-1234
     <div class="input-group">
       <label for="password">密碼</label>
       <input type="password" id="password" name="password" required>
@@ -94,10 +93,6 @@ a:hover {
 function login() {
 	var phone = document.getElementById("phone").value;
     var password = document.getElementById("password").value;
-    
-    console.log('Sending phone:', phone);
-    console.log('Sending password:', password);
-
     var formData = new FormData();
     formData.append("phone", phone);
     formData.append("password", password);
@@ -118,6 +113,10 @@ function login() {
         // window.location.href = '/home';
         console.log('Login response:', text);
     })
+    .then(data => {
+ 		// 登入成功，將 JWT 存儲在 localStorage 中
+ 		localStorage.setItem('token', data.token);
+	})
     .catch(error => {
         alert(error.message);
     });

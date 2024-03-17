@@ -25,6 +25,7 @@ public class AuthUserDetailsService implements UserDetailsService {
         if (user == null) {
         	throw new UsernameNotFoundException("找不到用户: " + phone);
         }
+        userService.updateUserLastLoginTime(phone);
 
         List<GrantedAuthority> authorities = getAuthorities();
 

@@ -22,7 +22,7 @@
   }).then((result) => {
     // 當SweetAlert2彈出窗口關閉後，跳轉到首頁
     if (result.isConfirmed) {
-      window.location.href = "/index.html"; // 直接指向首頁的相對路徑
+      window.location.href = "/afterlogin.html"; // 直接指向首頁的相對路徑
     }
   });
 </script>

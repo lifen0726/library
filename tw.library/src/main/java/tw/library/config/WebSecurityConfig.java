@@ -1,5 +1,8 @@
 package tw.library.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -10,7 +13,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import tw.library.service.AuthUserDetailsService;
 
 //import com.carrotcake.service.AuthUserDetailsService;
@@ -62,5 +70,12 @@ public class WebSecurityConfig {
 		  .defaultSuccessUrl("/login/welcome")
 		  .and()
 		  .build();
+	}
+	
+	@PostMapping("/login/welcome")
+	public String loginWelcome(HttpServletRequest request, HttpServletResponse response) {
+	    // 设置用户已登录状态到会话中
+	    request.getSession().setAttribute("isLoggedIn", true);
+	    return "redirect:/index.html";
 	}
 }

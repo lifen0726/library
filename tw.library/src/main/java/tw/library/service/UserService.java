@@ -9,6 +9,7 @@ import tw.library.exception.UserNotFoundException;
 import tw.library.model.User;
 import tw.library.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,34 +44,12 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
-	public User findByNameAndPsw(String name, String password) {
-		return userRepository.findByNameAndPassword(name, password);
-	}
-
-	public User findByName(String name) {
-		Optional<User> uResp = userRepository.findByName(name);
-		if (uResp.isEmpty()) {
-			throw new UsernameNotFoundException("Can't find member.");
-		}
-		return uResp.get();
-	}
-
 	public boolean existsByUsername(String username) {
 		return userRepository.existsByName(username);
 	}
 	
 	public boolean existsByPhone(String phone) {
 		return userRepository.existsByPhone(phone);
-	}
-
-	public User getMemberById(int memberId) {
-		Optional<User> optionalMember = userRepository.findById(memberId);
-
-		if (optionalMember.isPresent()) {
-			return optionalMember.get();
-		} else {
-			throw new UserNotFoundException("Member not found with ID: " + memberId);
-		}
 	}
 
 	public User findByPhone(String phone) {
@@ -81,10 +60,10 @@ public class UserService {
 		}
 		return uResp.get();
 	}
-
-
-
-
-	
-
+	public void updateUserLastLoginTime(String phone) {
+        User user = findByPhone(phone);
+        System.out.println("user登入"+user);
+        user.setLastLoginTime(LocalDateTime.now());   
+        userRepository.save(user);
+    }
 }

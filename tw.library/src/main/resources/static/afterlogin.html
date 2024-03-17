@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>圖書借閱系統</title>
+  <!-- 引入 Vue.js 庫 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <style>
+    /* 样式可以根据需求进行调整 */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .book {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .book h2 {
+      margin-top: 0;
+    }
+    .red-text {
+  color: red;
+  font-size: 20px; /* 調整字體大小 */
+}
+  </style>
+</head>
+<body>
+  <div id="app">
+  <div class="container">
+    <h1>圖書借閱系統</h1>
+    <div v-if="borrowSuccess" class="success-message red-text">
+  書籍 "{{ borrowedBookTitle }}" 借閱成功！
+</div>
+<div v-if="borrowError" class="error-message red-text">
+  借閱失敗，請重試。
+</div>
+<div v-if="returnSuccess" class="success-message red-text">
+  書籍 "{{ returnedBookTitle }}" 還書成功！
+</div>
+<div v-if="returnError" class="error-message red-text">
+  還書失敗，請重試。
+</div>
+<div v-if="books.length === 0" class="red-text">
+  <p>暫無圖書</p>
+</div>
+    <div v-else>
+      <div class="book" v-for="book in books" :key="book.inventoryid">
+        <h2>{{ book.title }}</h2>
+        <p>作者: {{ book.author }}</p>
+        <p>類型: {{ book.genre }}</p>
+        <p>可借閱狀態: {{ book.available ? '可借閱' : '不可借閱' }}</p>
+        <button @click="borrowBook(book)" :disabled="!book.available">借閱</button>
+        <button @click="returnBook(book)" v-if="!book.available">還書</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script>
+    // 定义 userId
+    const userId = 1;
+
+    // 检查 referrer 是否包含指定的字符串
+    if (!document.referrer.includes("login/welcome")) {
+      // 如果不是，重定向到登入頁面
+      window.location.href = "/login/page";
+    } else {
+      // 创建 Vue 实例
+      new Vue({
+  el: '#app',
+  data: {
+    books: [
+            { inventoryid: 10000, title: 'Vue.js 實戰', author: '作者1', genre: '技術', available: true },
+            { inventoryid: 10001, title: 'JavaScript 高級編程', author: '作者2', genre: '技術', available: true },
+            { inventoryid: 10002, title: '設計模式', author: '作者3', genre: '技術', available: true },
+            { inventoryid: 10003, title: '哈利·波特與魔法石', author: 'J.K. 羅琳', genre: '小說', available: true },
+            { inventoryid: 10004, title: '飄', author: '瑪格麗特·米切爾', genre: '小說', available: true }
+          ],
+    borrowSuccess: false,         // 用于标识借书成功
+    borrowError: false,           // 用于标识借书失败
+    returnSuccess: false,         // 用于标识还书成功
+    returnError: false,           // 用于标识还书失败
+    borrowedBookTitle: '',        // 存储成功借书的书籍标题
+    returnedBookTitle: '',        // 存储成功还书的书籍标题
+  },
+  methods: {
+    borrowBook(book) {
+            // 執行借書操作
+            fetch(`/borrowing-records/borrow/${userId}/${book.inventoryid}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                // 可以傳遞更多相關的借閱信息，這裡只傳了書籍ID和使用者ID
+                userId: userId,
+                inventoryId: book.inventoryid,
+              }),
+            })
+            .then(response => {
+              if (response.ok) {
+                console.log(`${book.title} 借閱成功`);
+                // 更新前端的書籍狀態，例如將書籍的available設置為false等
+                book.available = false;
+                this.borrowSuccess = true;           // 设置借书成功状态为true
+                this.borrowError = false;            // 设置借书失败状态为false
+                this.borrowedBookTitle = book.title; // 存储成功借书的书籍标题
+              } else {
+                console.error('借閱失敗');
+                this.borrowSuccess = false; // 设置借书成功状态为false
+                this.borrowError = true;    // 设置借书失败状态为true
+              }
+            })
+            .catch(error => {
+              console.error('發生錯誤:', error);
+              this.borrowSuccess = false; // 设置借书成功状态为false
+              this.borrowError = true;    // 设置借书失败状态为true
+            });
+          },
+    returnBook(book) {
+      fetch(`/borrowing-records/return-book/${userId}/${book.inventoryid}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: userId,
+          inventoryId: book.inventoryid,
+        }),
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log(`${book.title} 還書成功`);
+          this.returnSuccess = true;           // 设置还书成功状态为true
+          this.returnError = false;            // 设置还书失败状态为false
+          this.returnedBookTitle = book.title; // 存储成功还书的书籍标题
+          book.available = true;               // 更新书籍状态
+        } else {
+          console.error('還書失敗');
+          this.returnSuccess = false; // 设置还书成功状态为false
+          this.returnError = true;    // 设置还书失败状态为true
+        }
+      })
+      .catch(error => {
+        console.error('發生錯誤:', error);
+        this.returnSuccess = false; // 设置还书成功状态为false
+        this.returnError = true;    // 设置还书失败状态为true
+      });
+    }
+  }
+});
+    }
+  </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>圖書借閱系統</title>
+  <!-- 引入 Vue.js 庫 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <style>
+    /* 样式可以根据需求进行调整 */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .book {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .book h2 {
+      margin-top: 0;
+    }
+    .red-text {
+      color: red;
+      font-size: 20px; /* 調整字體大小 */
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <h1>圖書借閱系統</h1>
+      <div v-if="borrowSuccess" class="success-message red-text">
+        書籍 "{{ borrowedBookTitle }}" 借閱成功！
+      </div>
+      <div v-if="borrowError" class="error-message red-text">
+        借閱失敗，請重試。
+      </div>
+      <div v-if="returnSuccess" class="success-message red-text">
+        書籍 "{{ returnedBookTitle }}" 還書成功！
+      </div>
+      <div v-if="returnError" class="error-message red-text">
+        還書失敗，請重試。
+      </div>
+      <div v-if="books.length === 0" class="red-text">
+        <p>暫無圖書</p>
+      </div>
+      <div v-else>
+        <div class="book" v-for="book in books" :key="book.inventoryid">
+          <h2>{{ book.name }}</h2>
+          <p>作者: {{ book.author }}</p>
+          <p>類型: {{ book.Introduction }}</p>
+          <p>可借閱狀態: {{ getBookStatus(book) }}</p>
+          <button @click="borrowBook(book)" :disabled="!book.available">借閱</button>
+          <button @click="returnBook(book)" v-if="!book.available">還書</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 定义 userId
+    const userId = 1;
+
+    // 检查 referrer 是否包含指定的字符串
+    if (!document.referrer.includes("login/welcome")) {
+      // 如果不是，重定向到登入頁面
+      window.location.href = "/login/page";
+    } else {
+      // 创建 Vue 实例
+      new Vue({
+        el: '#app',
+        data: {
+          books: [],
+          borrowSuccess: false,
+          borrowError: false,
+          returnSuccess: false,
+          returnError: false,
+          borrowedBookTitle: '',
+          returnedBookTitle: '',
+        },
+        methods: {
+          fetchBooks() {
+            // 假设您有一个获取书籍信息的 API
+            fetch('/books')
+              .then(response => response.json())
+              .then(data => {
+                this.books = data.books;
+              })
+              .catch(error => console.error('获取书籍信息失败:', error));
+          },
+          getBookStatus(book) {
+            // 假设您的图书状态信息包含在book对象中的status属性中
+            // 这里可以根据实际情况修改
+            return book.status === '在庫' ? '可借閱' : '不可借閱';
+          },
+          borrowBook(book) {
+            // 实现借书操作，与之前的代码类似
+          },
+          returnBook(book) {
+            // 实现还书操作，与之前的代码类似
+          }
+        },
+        mounted() {
+          // 在Vue实例挂载后获取书籍信息
+          this.fetchBooks();
+        }
+      });
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+

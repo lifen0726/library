@@ -13,7 +13,7 @@ CREATE TABLE Inventory (
     inventory_id INT PRIMARY KEY IDENTITY(10000,1), -- 假設使用 INT 作為庫存ID的資料類型
     ISBN VARCHAR(20),  -- 假設ISBN長度不超過20個字元
     store_time DATETIME NOT NULL,  -- 書籍入庫日期時間
-    status NVARCHAR(50) NOT NULL  -- 書籍狀態
+    status NVARCHAR(50) NOT NULL  -- 書籍狀態-->在庫、出借中、整理中(歸還後未入庫)、遺失、損毀、廢棄
 );
 
 -- 創建 Book 書籍表
@@ -26,11 +26,14 @@ CREATE TABLE Book (
 
 -- 創建 Borrowing Record 借閱紀錄表
 CREATE TABLE Borrowing_Records (
+    Borrowing_Records_id INT PRIMARY KEY IDENTITY(100,1),
     user_id INT, -- 使用者 ID
     inventory_id INT, -- 庫存 ID
     borrowing_time DATETIME NOT NULL, -- 借出日期時間
     return_time DATETIME, -- 歸還日期時間
 	FOREIGN KEY (user_id) REFERENCES Users(user_id),-- 外鍵，與User表關聯
     FOREIGN KEY (inventory_id) REFERENCES Inventory(inventory_id), -- 設置外鍵，與Inventory表關聯
-    PRIMARY KEY (user_id, inventory_id)
+    
 );
+
+
