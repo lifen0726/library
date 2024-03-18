@@ -1,3 +1,8 @@
+
+--	使用 master 資料庫
+USE master;
+
+
 -- 創建 User 使用者表
 CREATE TABLE Users (
     user_id INT PRIMARY KEY IDENTITY(1,1), -- 假設使用 INT 作為使用者ID的資料類型
