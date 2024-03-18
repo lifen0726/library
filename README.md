@@ -2,6 +2,7 @@
 註冊使用的網址 http://localhost:8080/register.html
 登入使用的網址 http://localhost:8080/login/page
 
+MS SQL
 資料庫使用系統資料庫master
 需先創建帳號watcher密碼為8787@
 或是要自行至application.properties更改
