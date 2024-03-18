@@ -1,8 +1,6 @@
-INDEX VERSION 1.4+D:\新增資料夾\圖書館\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
-2422991101.index
-2306745890.index
+INDEX VERSION 1.4+C:\新增資料夾\Wtest\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+1838726001.index
+1021986668.index
+136416465.index
 2723365463.index
-2351203749.index
-971694994.index
-3782199023.index
-897072827.index
+1978178775.index
